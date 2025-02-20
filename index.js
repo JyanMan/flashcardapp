@@ -36,10 +36,10 @@ const cards = (!storedCards) ? [
     },
 ] : JSON.parse(storedCards);
 
-function saveToGlobal() {
+function saveToSession() {
     sessionStorage.setItem("globalCards", JSON.stringify(cards));
 }
-saveToGlobal();
+saveToSession();
 
 const getNewCard = (id) => {
     return {
@@ -64,7 +64,7 @@ const addCard = () => {
     cards.push(newCard);
     console.log(cards);
     renderCards();
-    saveToGlobal();
+    saveToSession();
 }
 
 
@@ -80,7 +80,7 @@ const saveCard = (id) => {
     console.log(cards);
     renderCards();
     //closeCardTab();
-    saveToGlobal();
+    saveToSession();
 }
 
 const removeCard = (id) => {
@@ -92,7 +92,7 @@ const removeCard = (id) => {
     console.log("BEFORE", cards);
     cards.splice(id, 1);
     renderCards();
-    saveToGlobal();
+    saveToSession();
     console.log("AFTER", cards);
     //rearrange card id
     for (let i = 0; i <= cards.length-1; i++) {
