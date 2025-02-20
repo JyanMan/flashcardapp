@@ -1,7 +1,6 @@
 //import {cards} from '../scripts/index.js';
 const storedCards = sessionStorage.getItem("globalCards");
 const cardsToReview = storedCards ? JSON.parse(storedCards) : [];
-console.log(cardsToReview);
 
 const nextBtn = document.getElementById('next-btn');
 //const cardsToReview = [...cards];
