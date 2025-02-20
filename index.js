@@ -6,6 +6,7 @@ const addCardBtn = document.getElementById('add-new-card-btn');
 const newFrontCard = document.querySelector('.new.card-front');
 const newBackCard = document.querySelector('.new.card-back');
 const cardList = document.getElementById('card-list');
+const cardTabBackground = document.querySelector('.card-tab-backg');
 
 const storedCards = sessionStorage.getItem("globalCards");
 const cards = (!storedCards) ? [
@@ -161,15 +162,6 @@ const openAddCardTab = () =>  {
     saveBtn.style.display = 'none';
 }
 
-if (addCardBtn) {
-
-    addCardBtn.addEventListener('click', addCard);
-    addBtn.addEventListener('click', openAddCardTab);
-    closeTabBtn.addEventListener('click', closeCardTab);
-    
-    renderCards();
-}
-
 //add draggability of card tab
 function dragElement() {
     const moveArea = document.getElementById("move-card-tab");
@@ -235,3 +227,19 @@ function elementOverElement(el1, el2) {
 }
 
 dragElement();
+
+function resizeCardTab() {
+    cardTab.style.width = cardTabBackground.getBoundingClientRect().width+"px";
+}
+
+resizeCardTab()
+window.addEventListener('resize', resizeCardTab);
+
+if (addCardBtn) {
+
+    addCardBtn.addEventListener('click', addCard);
+    addBtn.addEventListener('click', openAddCardTab);
+    closeTabBtn.addEventListener('click', closeCardTab);
+    
+    renderCards();
+}

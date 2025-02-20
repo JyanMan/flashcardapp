@@ -68,8 +68,6 @@ main {
     box-shadow: 0 0 0.5vw #344e41;
     border-radius: 5%;
     padding: 15px;
-    width: 250px;
-    height: 250px;
 }
 
 .card-tab input {
@@ -188,4 +186,17 @@ main {
 }
 #review-btn:hover, #add-card-btn:hover {
     background-color: rgb(234, 232, 232);
+}
+
+@media (max-width: 640px) {
+    #cards-container {
+        width: 320px;
+        font-size: 16px;
+    }
+    .card-tab {
+        font-size: 16px;
+    }
+    .card-tab input {
+        width: 120px;
+    }
 }
