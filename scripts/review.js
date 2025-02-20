@@ -103,7 +103,6 @@ window.addEventListener("resize", () =>
 let animated = false;
 async function nextCard() {
     animated = false;
-    console.log(currentCardIndex);
     let currentCard = cardsToReview[currentCardIndex];
 
     if (flipped === false) {
@@ -129,16 +128,11 @@ async function nextCard() {
 }
 
 const cardBehindToNextCard = (cardIndex) => {
-    //get the currentcard
-    //get the card behind (card on display)
     const cardBehind = document.querySelector('.first.display.card');
-
-    //get the fron of the next card
     const frontOfCard = cardsToReview[cardIndex].front;
     //set the inner text of card behind to the front of nextCard
     cardBehind.innerText = frontOfCard;
     cardBehind.style.backgroundColor = toLightColor;
-    //to the front and back of the next card
 }
 
 const getRightOfLastCard = () => {
@@ -156,7 +150,6 @@ const getRightOfLastCard = () => {
 }
 
 const animate = () => {
-    //rcPos is reviewCardPosition
     const increment = 15;
     const displayCardPos = 100/cardsToReview.length;
     const interval = displayCardPos/increment;
@@ -180,19 +173,21 @@ const animate = () => {
         let pos2 = pos1;
         function step() {
             pos2 = pos1
+
+            //This whole section of code sucks
             if (pos1 < winWidth-(reviewCardWidth*(-0.5))) {
-                //console.log(pos1);
+                //move the review card
                 const reviewCardCurrentLeft = reviewCard.getBoundingClientRect().left;
                 const displayCardCurrentLeft = firstDisplayCard.getBoundingClientRect().left-displayCardLastLeft;
-                //console.log(reviewCardCurrentLeft, pos1);
+                
                 if (pos1 >= goBackWidth) {
                     reviewCard.style.left = `calc(${reviewCardCurrentLeft-(theIncrement*0.5)}px)`;
                 }
                 else reviewCard.style.left = `calc(${reviewCardCurrentLeft+theIncrement}px)`;
                 pos1 += theIncrement;
-                //console.log(pos1-pos2);
+                //moves the display cards
 
-                if (pos1 >= goBackWidth *0.8) {
+                if (pos1 >= goBackWidth *0.8) { //mulitplying by .8 is not ideal, algorithm I made is just bad
                     reviewCard.style.zIndex = 1;
                     reviewCard.style.backgroundColor = toDarkColor;
                 }
