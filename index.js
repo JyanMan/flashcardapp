@@ -151,7 +151,7 @@ const openEditCardTab = (card) => {
     }
     saveHandler = () => saveCard(card.id);
     saveBtn.addEventListener('click', saveHandler);
-
+    resizeCardTab();
 }
 
 const openAddCardTab = () =>  {
@@ -160,6 +160,7 @@ const openAddCardTab = () =>  {
     newBackCard.value = '';
     addCardBtn.style.display = 'block';
     saveBtn.style.display = 'none';
+    resizeCardTab();
 }
 
 //add draggability of card tab
@@ -232,11 +233,10 @@ function resizeCardTab() {
     cardTab.style.width = cardTabBackground.getBoundingClientRect().width+"px";
 }
 
-resizeCardTab()
 window.addEventListener('resize', resizeCardTab);
 
 if (addCardBtn) {
-
+    
     addCardBtn.addEventListener('click', addCard);
     addBtn.addEventListener('click', openAddCardTab);
     closeTabBtn.addEventListener('click', closeCardTab);
