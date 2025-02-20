@@ -94,6 +94,10 @@ main .home-anchor {
     box-shadow: 0 0 2px 0.2px black;
 }
 
+main .home-anchor:hover {
+    background-color: #a2a099;
+} 
+
 @media (max-width: 1024px) {
     .card {
         width: 200px;
