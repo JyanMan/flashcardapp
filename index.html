@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlashCard App</title>
+    <link rel="stylesheet" href="styles/styles.css">
+</head>
+<body>
+    <main>
+        <h1 id="title">Simple Flashcard App</h1>
+        <section id="home">
+            <div id="cards-container">
+                <span id="card-btns-container">
+                    <button id="add-card-btn">Add Card</button>
+                    <a href="/html/review.html" id="review-btn">Review Cards</a>
+                </span>
+                <div class="card-tab-backg">
+                    <div class="new card-tab">
+                        <div class="area">
+                            <div id="move-card-tab">Move Tab</div>
+                            <button id="close-nct-btn"></button>
+                        </div>
+                        <label for="new card-front">Front content</label>
+                        <input type="text" class="new card-front">
+                        <label for="new card-back">Back content</label>
+                        <input type="text" class="new card-back">
+                        <button id="add-new-card-btn">Add</button>
+                        <button id="save-card-btn">Save</button>
+                    </div>
+                </div>
+                <label class="cap">List of Flashcards</label>
+                <ul id="card-list">
+                </ul>
+            </div>
+        </section>
+    </main>
+    <script type="module" src="/index.js"></script>
+</body>
+</html>
