@@ -12,10 +12,11 @@ body {
     border-radius: 4px;
     min-height: 40vw;
     width: auto;
-    margin: 40px 30px 0;
+    margin: 60px 30px 0;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    position: relative;
 }
 
 #next-btn {
@@ -77,6 +78,22 @@ body {
     font-size: 25px;
 }
 
+main .home-anchor {
+    background-color: #bfbcb4;
+    color: black;
+    text-decoration: none;
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: bold;
+    border-radius: 5px;
+    border: 2px solid #344e41;
+    position: absolute;
+    font-size: 15px;
+    top: -45px;
+    box-shadow: 0 0 2px 0.2px black;
+}
+
 @media (max-width: 1024px) {
     .card {
         width: 200px;
@@ -85,6 +102,11 @@ body {
 
     .card div {
         font-size: 18px;
+    }
+
+    main .home-anchor {
+        top: -40px;
+        font-size: 12px;
     }
 }
 
