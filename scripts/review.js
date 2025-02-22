@@ -148,6 +148,8 @@ const getRightOfLastCard = () => {
     return window.innerWidth - rightOfLastCard;
 }
 
+
+const reviewSection = document.getElementById("review-section");
 const animate = () => {
     const increment = 15;
     const displayCardPos = 100/cardsToReview.length;
@@ -168,24 +170,31 @@ const animate = () => {
 
         //move the first card to the end
         let pos1 = reviewCardLastLeft;
-        const goBackWidth = winWidth-rightOfLastCard;
+        //needed the left of review section to subtract it to most values
+        //as setting its css style to relative made the cards left 0 be shifted
+        const reviewSectionLeft = reviewSection.getBoundingClientRect().left;
+        const goBackWidth = winWidth-rightOfLastCard-reviewSectionLeft;
         let pos2 = pos1;
+        
         function step() {
             pos2 = pos1
 
             //This whole section of code sucks
             if (pos1 < winWidth-(reviewCardWidth*(-0.5))) {
-                //move the review card
-                const reviewCardCurrentLeft = reviewCard.getBoundingClientRect().left;
+                const reviewCardCurrentLeft = reviewCard.getBoundingClientRect().left
+                                            - reviewSectionLeft;
                 const displayCardCurrentLeft = firstDisplayCard.getBoundingClientRect().left-displayCardLastLeft;
-                
+
+                console.log(reviewCardCurrentLeft);
                 if (pos1 >= goBackWidth) {
                     reviewCard.style.left = `calc(${reviewCardCurrentLeft-(theIncrement*0.5)}px)`;
                 }
-                else reviewCard.style.left = `calc(${reviewCardCurrentLeft+theIncrement}px)`;
+                else {
+                    reviewCard.style.left = `calc(${reviewCardCurrentLeft+theIncrement}px)`;
+                } 
                 pos1 += theIncrement;
-                //moves the display cards
 
+                //moves the display cards
                 if (pos1 >= goBackWidth *0.8) { //mulitplying by .8 is not ideal, algorithm I made is just bad
                     reviewCard.style.zIndex = 1;
                     reviewCard.style.backgroundColor = toDarkColor;
