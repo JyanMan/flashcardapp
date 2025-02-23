@@ -1,3 +1,5 @@
+import { getFirstKey } from "./keyFind.js";
+import { getNextKey  } from "./keyFind.js";
 //import {cards} from '../scripts/index.js';
 const storedCards = sessionStorage.getItem("globalCards");
 const cardsToReview = storedCards ? new Map(JSON.parse(storedCards)) : [];
@@ -136,7 +138,7 @@ const cardBehindToNextCard = (cardIndex) => {
 const getRightOfLastCard = () => {
     const displayCards =  document.querySelectorAll('.display.card');
     let rightOfLastCard;
-    if (displayCards.length >= 2) {
+    if (displayCards.length > 2) {
 
         rightOfLastCard = displayCards[displayCards.length-2].getBoundingClientRect().right;
     }
@@ -148,6 +150,8 @@ const getRightOfLastCard = () => {
 }
 
 
+
+//REFACTOR AND CLEAN THIS ANIMATE ALGORITHM
 const reviewSection = document.getElementById("review-section");
 const animate = () => {
     const increment = 15;
@@ -225,24 +229,8 @@ const animate = () => {
     })
 }
 
-function getFirstKey() {
-    return cardsToReview.keys().next().value;
-}
-
-function getNextKey(map, currentKey = 0) {
-    let mapIter = map.keys();
-    let found = false
-    
-    for (let key of mapIter) {
-        if (found) return key;
-        if (key === currentKey) 
-            found = true;
-    }
-    return getFirstKey();
-}
-
 if (cardsToReview && cardsToReview.size > 0) {
-    const key = getFirstKey();
+    const key = getFirstKey(cardsToReview);
     const card = cardsToReview.get(key);
     renderCards(card.front, card.back, key);
     nextBtn.addEventListener('click', nextCard);
