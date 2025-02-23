@@ -1,5 +1,9 @@
-import { getFirstKey } from "./keyFind.js";
-import { getNextKey  } from "./keyFind.js";
+import { getFirstKey } from "./keyFinders.js";
+import { getNextKey  } from "./keyFinders.js";
+import { renderDisplayCards } from "./renderCards.js";
+import { getRightOfLastCard } from "./cardPositions.js";
+import { cardBehindToNextCard } from "./cardPositions.js";
+
 //import {cards} from '../scripts/index.js';
 const storedCards = sessionStorage.getItem("globalCards");
 const cardsToReview = storedCards ? new Map(JSON.parse(storedCards)) : [];
@@ -9,13 +13,6 @@ const nextBtn = document.getElementById('next-btn');
 
 let currentCardIndex = 0;
 let flipped = false;
-
-const maxDisplayedCards = 20;
-let cardWidth = 200;
-let cardHeight = 200;
-
-const toDarkColor = '#629161';
-const toLightColor = `#ccc9bf`;
 
 //LEARNED SIMPLE BACKEND LEZZ GOOO!!!
 
@@ -53,55 +50,11 @@ const renderCards = (front, back, id) => {
         return;
     }
 
-    renderDisplayCards();
-}
-
-const renderDisplayCards = () => {
-    const cardContainer = document.getElementById("card-stack");
-    while (cardContainer.firstChild) {
-        cardContainer.removeChild(cardContainer.firstChild);
-    }
-    //calculate how many extra cards to display
-    let displayedExtraCards = 0;
-    if (cardsToReview.size > maxDisplayedCards) {
-        displayedExtraCards = maxDisplayedCards-1;
-    }
-    else {
-        displayedExtraCards = cardsToReview.size-1;
-    }
-
-    cardWidth = document.querySelector('.card').getBoundingClientRect().width;
-    cardHeight = document.querySelector('.card').getBoundingClientRect().height;
-    for (let i = 0; i <= displayedExtraCards-1; i++) {
-        const displayCard = document.createElement('div');
-
-        if (i === 0) {
-            displayCard.setAttribute('class', `first display card`);
-        }
-        else displayCard.setAttribute('class', `display card`);
-        //displayCard.innerText = 'dCard ' + i;
-        displayCard.style.width = `${cardWidth}px`;
-        displayCard.style.height =  `${cardHeight}px`;
-
-        //get the 100%
-        //subtract that by the width
-        const widthFromEnd = `(${100}% - ${cardWidth}px)`;
-        //you get that difference and divide it by the amount of cards
-        //the result is the amount of spaces for each card
-        const cardLeft = `(${widthFromEnd} / ${displayedExtraCards-1})`;
-        
-        displayCard.style.left = `calc(${i} * ${cardLeft})`;
-        displayCard.style.zIndex = `${maxDisplayedCards-i}`;
-        if (i === 0) {
-            displayCard.style.zIndex = maxDisplayedCards;
-        }
-
-        cardContainer.appendChild(displayCard);
-    }
+    renderDisplayCards(cardsToReview);
 }
 
 window.addEventListener("resize", () => 
-    renderDisplayCards());
+    renderDisplayCards(cardsToReview));
 
 let animated = false;
 async function nextCard() {
@@ -113,44 +66,16 @@ async function nextCard() {
         return;
     }
 
-    //change card 1 on display to the next review card
-    
-    
+    //change card 1 on display to the next review card    
     if (!animated) {
         currentCardIndex = getNextKey(cardsToReview, currentCardIndex);
         
-        cardBehindToNextCard(currentCardIndex);
+        cardBehindToNextCard(currentCardIndex, cardsToReview);
         currentCard = cardsToReview.get(currentCardIndex);
         await animate();
         renderCards(currentCard.front, currentCard.back, currentCardIndex);
     }
 }
-
-const cardBehindToNextCard = (cardIndex) => {
-    const cardBehind = document.querySelector('.first.display.card');
-    //console.log("card behind is ", cardsToReview.get(cardIndex));
-    const frontOfCard = cardsToReview.get(cardIndex).front;
-    //set the inner text of card behind to the front of nextCard
-    cardBehind.innerText = frontOfCard;
-    cardBehind.style.backgroundColor = toLightColor;
-}
-
-const getRightOfLastCard = () => {
-    const displayCards =  document.querySelectorAll('.display.card');
-    let rightOfLastCard;
-    if (displayCards.length > 2) {
-
-        rightOfLastCard = displayCards[displayCards.length-2].getBoundingClientRect().right;
-    }
-    else {
-        rightOfLastCard = displayCards[displayCards.length-1].getBoundingClientRect().right;
-
-    }
-    return window.innerWidth - rightOfLastCard;
-}
-
-
-
 //REFACTOR AND CLEAN THIS ANIMATE ALGORITHM
 const reviewSection = document.getElementById("review-section");
 const animate = () => {
@@ -166,7 +91,7 @@ const animate = () => {
     const reviewToDisplayDist = displayCardLastLeft-reviewCardLastLeft;
 
     const winWidth = window.innerWidth;
-    const rightOfLastCard = getRightOfLastCard();
+    const rightOfLastCard = getRightOfLastCard(displayCard);
     const theIncrement = (winWidth-reviewCardWidth)/increment;
     return new Promise((resolve) => {
 
