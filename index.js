@@ -9,96 +9,77 @@ const cardList = document.getElementById('card-list');
 const cardTabBackground = document.querySelector('.card-tab-backg');
 
 const storedCards = sessionStorage.getItem("globalCards");
-const cards = (!storedCards) ? [
-    {id: 0,
-        front: 'frog',
-        back: 'amphibian'
-    },
-    {id: 1,
-        front: 'dog',
-        back: 'mammal'
-    },
-    {id: 2, 
-        front: 'cat',
-        back: 'mammal'
-    },
-    {id: 3,
-        front: 'Watashi',
-        back: `It's me`
-    },
-    {id: 4,
-        front: 'Kore',
-        back: `This`
-    }, 
-    {id: 5,
-        front: 'Yamete',
-        back: `stop`
-    },
-] : JSON.parse(storedCards);
+
+const cardsMap = (!storedCards) ? new Map([
+    [0,
+        { front: 'frog', back: 'amphibian' }
+    ],
+    [1,
+        {front: 'cat', back: 'mammal'}
+    ],
+    [2,
+        { front: 'dog', back: 'mammal' }
+    ]
+]) : new Map(JSON.parse(storedCards));
+
+console.log(cardsMap);
 
 function saveToSession() {
-    sessionStorage.setItem("globalCards", JSON.stringify(cards));
+    sessionStorage.setItem("globalCards", JSON.stringify([...cardsMap]));
 }
 saveToSession();
 
-const getNewCard = (id) => {
-    return {
-        id: id,
-        front: newFrontCard.value,
-        back: newBackCard.value
-    };
+const getNewCard = () => {
+    
+    return {front: newFrontCard.value, back: newBackCard.value};
 }
 
 function cardIsEmpty(front, back) {
     return front.value === '' || back.value === '';
 }
 
+function getNextAvailableKey() {
+    let i = 0;
+    while (cardsMap.has(i)) i++;
+    return i;
+}
+
 const addCard = () => {
     
-    if (newFrontCard.value === '' || newBackCard.value === '') {
+    if (cardIsEmpty(newFrontCard, newBackCard)) {
         alert('Please fill out both sides of the card');
         return;
     }
-    const newCard = getNewCard(cards.length);
+    const newCard = getNewCard();
 
-    cards.push(newCard);
-    console.log(cards);
+    cardsMap.set(getNextAvailableKey(), newCard);
+    console.log(cardsMap);
     renderCards();
     saveToSession();
 }
 
 
-const saveCard = (id) => {
-    const card = cards[id];
+const saveCard = (key) => {
+    const card = cardsMap.get(key);
     if (cardIsEmpty(card.front, card.back)) {
         alert('Please fill out both sides of the card');
         return;
     }
-    const newCard = getNewCard(id);
+    const newCard = getNewCard();
 
-    cards[id] = newCard;
-    console.log(cards);
+    cardsMap.set(key, newCard);
     renderCards();
-    //closeCardTab();
     saveToSession();
 }
 
-const removeCard = (id) => {
-    console.log(cards);
-    console.log("removed");
-    if (cards.length === 1) {
-        cards.pop();
-    }
-    console.log("BEFORE", cards);
-    cards.splice(id, 1);
+const removeCard = (key) => {
+    cardsMap.delete(key);
     renderCards();
-    saveToSession();
-    console.log("AFTER", cards);
-    //rearrange card id
-    for (let i = 0; i <= cards.length-1; i++) {
-        cards[i].id = i;
+    if (cardTab.style.display !== 'none') {
+        openAddCardTab();
     }
-    openAddCardTab();
+    else return;
+    saveToSession();
 }
 
 const renderCards = () => {
@@ -108,9 +89,10 @@ const renderCards = () => {
         cardList.removeChild(cardList.firstChild);
     }
 
-    if (cards) {
+    if (cardsMap) {
 
-        cards.forEach(card => {
+        cardsMap.forEach((card, key) => {
+            //console.log(card);
             const cardElement = document.createElement('li');
             cardElement.className = 'card';
             const cardContent = document.createTextNode(card.front + ' - ' + card.back);
@@ -118,9 +100,9 @@ const renderCards = () => {
     
             const deleteBtn = document.createElement('button');
             deleteBtn.className = 'delete-btn';
-            deleteBtn.onclick = () => removeCard(card.id);
+            deleteBtn.onclick = () => removeCard(key);
     
-            cardElement.addEventListener('click', () => {openEditCardTab(card)});
+            cardElement.addEventListener('click', () => {openEditCardTab(key)});
     
             cardElement.appendChild(deleteBtn);
             cardList.appendChild(cardElement);
@@ -133,9 +115,10 @@ const closeCardTab = () => {
 }
 
 let saveHandler;
-const openEditCardTab = (card) => {
+const openEditCardTab = (key) => {
+    const card = cardsMap.get(key);
     //console.log("opned");
-    if (cards.includes(card) === false) {
+    if (cardsMap.has(key) === false) {
         return;
     }
     console.log("openedcard tab");
@@ -149,7 +132,7 @@ const openEditCardTab = (card) => {
     if (saveHandler) {
         saveBtn.removeEventListener('click', saveHandler);
     }
-    saveHandler = () => saveCard(card.id);
+    saveHandler = () => saveCard(key);
     saveBtn.addEventListener('click', saveHandler);
     resizeCardTab();
 }
