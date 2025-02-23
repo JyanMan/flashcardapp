@@ -46,7 +46,7 @@ const renderCards = (front, back, id) => {
     else {
         reviewCardContainer.appendChild(cardElement);
     }
-    if (cardsToReview.length === 1) {
+    if (cardsToReview.size === 1) {
         console.log("canceled");
         return;
     }
@@ -73,7 +73,9 @@ const renderDisplayCards = () => {
     for (let i = 0; i <= displayedExtraCards-1; i++) {
         const displayCard = document.createElement('div');
 
-        if (i === 0) displayCard.setAttribute('class', `first display card`);
+        if (i === 0) {
+            displayCard.setAttribute('class', `first display card`);
+        }
         else displayCard.setAttribute('class', `display card`);
         //displayCard.innerText = 'dCard ' + i;
         displayCard.style.width = `${cardWidth}px`;
@@ -153,9 +155,8 @@ const getRightOfLastCard = () => {
 const reviewSection = document.getElementById("review-section");
 const animate = () => {
     const increment = 15;
-    const displayCardPos = 100/cardsToReview.length;
-    const interval = displayCardPos/increment;
-    
+    const displayCardPos = 100/cardsToReview.size;
+    const interval = displayCardPos/increment;    
     const reviewCard = document.querySelector('.first.card');
     const reviewCardWidth = reviewCard.getBoundingClientRect().width;
     const firstDisplayCard = document.querySelector('.first.display.card');
@@ -186,12 +187,14 @@ const animate = () => {
                                             - reviewSectionLeft;
                 const displayCardCurrentLeft = firstDisplayCard.getBoundingClientRect().left-displayCardLastLeft;
 
-                console.log(reviewCardCurrentLeft);
+                //console.log(displayCardCurrentLeft);
                 if (pos1 >= goBackWidth) {
                     reviewCard.style.left = `calc(${reviewCardCurrentLeft-(theIncrement*0.5)}px)`;
+                    console.log("BACK");
                 }
                 else {
                     reviewCard.style.left = `calc(${reviewCardCurrentLeft+theIncrement}px)`;
+                    console.log("FORWARD");
                 } 
                 pos1 += theIncrement;
 
@@ -208,8 +211,9 @@ const animate = () => {
                     //console.log(displayCard.length, displayCard)
                     if (displayCard[1].getBoundingClientRect().left > displayCardLastLeft) {
                         displayCard.forEach((card) => {
+                            //card.style.left = `${card.getBoundingClientRect().left}px - ${interval}%`;
                             if (card !== firstDisplayCard) {
-                                
+                                //console.log(card.style.left);
                                 card.style.left = `calc(${card.style.left} - ${interval}%)`;
                             }
                             //console.log(card.innerText, card.style.left);
