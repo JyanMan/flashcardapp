@@ -1,6 +1,6 @@
 //import {cards} from '../scripts/index.js';
 const storedCards = sessionStorage.getItem("globalCards");
-const cardsToReview = storedCards ? JSON.parse(storedCards) : [];
+const cardsToReview = storedCards ? new Map(JSON.parse(storedCards)) : [];
 
 const nextBtn = document.getElementById('next-btn');
 //const cardsToReview = [...cards];
@@ -17,7 +17,7 @@ const toLightColor = `#ccc9bf`;
 
 //LEARNED SIMPLE BACKEND LEZZ GOOO!!!
 
-const flipCard = (id) => {
+const flipCard = () => {
     flipped = true;
     const cardBack = document.querySelector('.first.card').querySelector('.card-back');
     cardBack.style.display = (cardBack.style.display === 'none') ? 'block' : 'none';
@@ -61,11 +61,11 @@ const renderDisplayCards = () => {
     }
     //calculate how many extra cards to display
     let displayedExtraCards = 0;
-    if (cardsToReview.length > maxDisplayedCards) {
+    if (cardsToReview.size > maxDisplayedCards) {
         displayedExtraCards = maxDisplayedCards-1;
     }
     else {
-        displayedExtraCards = cardsToReview.length-1;
+        displayedExtraCards = cardsToReview.size-1;
     }
 
     cardWidth = document.querySelector('.card').getBoundingClientRect().width;
@@ -102,10 +102,10 @@ window.addEventListener("resize", () =>
 let animated = false;
 async function nextCard() {
     animated = false;
-    let currentCard = cardsToReview[currentCardIndex];
+    let currentCard = cardsToReview.get(currentCardIndex);
 
     if (flipped === false) {
-        flipCard(currentCard.id);
+        flipCard();
         return;
     }
 
@@ -113,14 +113,14 @@ async function nextCard() {
     
     
     if (!animated) {
-        if (currentCardIndex === cardsToReview.length-1) {
+        if (currentCardIndex === cardsToReview.size-1) {
             currentCardIndex = 0;
         }
         else {
-            currentCardIndex++;
+            currentCardIndex = getNextKey(cardsToReview, currentCardIndex);
         }
         cardBehindToNextCard(currentCardIndex);
-        currentCard = cardsToReview[currentCardIndex];
+        currentCard = cardsToReview.get(currentCardIndex);
         await animate();
         renderCards(currentCard.front, currentCard.back, currentCard.id);
     }
@@ -128,7 +128,8 @@ async function nextCard() {
 
 const cardBehindToNextCard = (cardIndex) => {
     const cardBehind = document.querySelector('.first.display.card');
-    const frontOfCard = cardsToReview[cardIndex].front;
+    console.log("card behind is ", cardsToReview.get(cardIndex));
+    const frontOfCard = cardsToReview.get(cardIndex).front;
     //set the inner text of card behind to the front of nextCard
     cardBehind.innerText = frontOfCard;
     cardBehind.style.backgroundColor = toLightColor;
@@ -226,10 +227,37 @@ const animate = () => {
     })
 }
 
-if (cardsToReview && cardsToReview.length > 0) {
+function getLastKey(map) {
+    
+}
 
-    renderCards(cardsToReview[0].front, cardsToReview[0].back, cardsToReview[0].id);
+function getFirstKey() {
+    let i = 0;
+    cardsToReview.forEach(function(value, key) {
+        if (cardsToReview.has(key)) i = key;
+        return key;
+    })
+    return i;
+}
+
+function getNextKey(map, currentKey) {
+    let keysIterator = map.keys();
+    let found = false;
+
+    for (let key of keysIterator) {
+        if (found) return key;
+        if (key === currentKey) found = true;
+    }
+    return getFirstKey();
+}
+
+if (cardsToReview && cardsToReview.size > 0) {
+    const key = getFirstKey();
+    const card = cardsToReview.get(key);
+    renderCards(card.front, card.back, key);
     nextBtn.addEventListener('click', nextCard);
+    /*renderCards(cardsToReview[0].front, cardsToReview[0].back, cardsToReview[0].id);
+    nextBtn.addEventListener('click', nextCard);*/
 }
 else {
     alert("You have no cards to review");
