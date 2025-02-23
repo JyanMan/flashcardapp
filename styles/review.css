@@ -109,8 +109,8 @@ main .home-anchor:hover {
     }
 
     main .home-anchor {
-        top: -40px;
-        font-size: 12px;
+        top: -45px;
+        font-size: 15px;
     }
 }
 
@@ -121,6 +121,10 @@ main .home-anchor:hover {
     }
     .card div {
         font-size: 14px;
+    }
+    main .home-anchor {
+        top: -40px;
+        font-size: 12px;
     }
 }
 
