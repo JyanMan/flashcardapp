@@ -115,22 +115,18 @@ async function nextCard() {
     
     
     if (!animated) {
-        if (currentCardIndex === cardsToReview.size-1) {
-            currentCardIndex = 0;
-        }
-        else {
-            currentCardIndex = getNextKey(cardsToReview, currentCardIndex);
-        }
+        currentCardIndex = getNextKey(cardsToReview, currentCardIndex);
+        
         cardBehindToNextCard(currentCardIndex);
         currentCard = cardsToReview.get(currentCardIndex);
         await animate();
-        renderCards(currentCard.front, currentCard.back, currentCard.id);
+        renderCards(currentCard.front, currentCard.back, currentCardIndex);
     }
 }
 
 const cardBehindToNextCard = (cardIndex) => {
     const cardBehind = document.querySelector('.first.display.card');
-    console.log("card behind is ", cardsToReview.get(cardIndex));
+    //console.log("card behind is ", cardsToReview.get(cardIndex));
     const frontOfCard = cardsToReview.get(cardIndex).front;
     //set the inner text of card behind to the front of nextCard
     cardBehind.innerText = frontOfCard;
@@ -190,11 +186,9 @@ const animate = () => {
                 //console.log(displayCardCurrentLeft);
                 if (pos1 >= goBackWidth) {
                     reviewCard.style.left = `calc(${reviewCardCurrentLeft-(theIncrement*0.5)}px)`;
-                    console.log("BACK");
                 }
                 else {
                     reviewCard.style.left = `calc(${reviewCardCurrentLeft+theIncrement}px)`;
-                    console.log("FORWARD");
                 } 
                 pos1 += theIncrement;
 
@@ -231,26 +225,18 @@ const animate = () => {
     })
 }
 
-function getLastKey(map) {
-    
-}
-
 function getFirstKey() {
-    let i = 0;
-    cardsToReview.forEach(function(value, key) {
-        if (cardsToReview.has(key)) i = key;
-        return key;
-    })
-    return i;
+    return cardsToReview.keys().next().value;
 }
 
-function getNextKey(map, currentKey) {
-    let keysIterator = map.keys();
-    let found = false;
-
-    for (let key of keysIterator) {
+function getNextKey(map, currentKey = 0) {
+    let mapIter = map.keys();
+    let found = false
+    
+    for (let key of mapIter) {
         if (found) return key;
-        if (key === currentKey) found = true;
+        if (key === currentKey) 
+            found = true;
     }
     return getFirstKey();
 }
@@ -260,8 +246,6 @@ if (cardsToReview && cardsToReview.size > 0) {
     const card = cardsToReview.get(key);
     renderCards(card.front, card.back, key);
     nextBtn.addEventListener('click', nextCard);
-    /*renderCards(cardsToReview[0].front, cardsToReview[0].back, cardsToReview[0].id);
-    nextBtn.addEventListener('click', nextCard);*/
 }
 else {
     alert("You have no cards to review");
