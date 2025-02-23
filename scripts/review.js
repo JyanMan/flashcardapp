@@ -140,7 +140,7 @@ const cardBehindToNextCard = (cardIndex) => {
 const getRightOfLastCard = () => {
     const displayCards =  document.querySelectorAll('.display.card');
     let rightOfLastCard;
-    if (displayCards.length > 2) {
+    if (displayCards.length >= 2) {
 
         rightOfLastCard = displayCards[displayCards.length-2].getBoundingClientRect().right;
     }
