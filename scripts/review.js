@@ -14,6 +14,8 @@ const nextBtn = document.getElementById('next-btn');
 let currentCardIndex = 0;
 let flipped = false;
 
+const toDarkColor = '#629161';
+
 //LEARNED SIMPLE BACKEND LEZZ GOOO!!!
 
 const flipCard = () => {
